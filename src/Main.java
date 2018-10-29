@@ -72,23 +72,27 @@ public class Main extends Application {
     private void setDragAndDrop(GridPane gp) {
         for (ImageView iv : imageViews) {
             iv.setOnDragDetected(event -> {
-                Dragboard dragboard = iv.startDragAndDrop(TransferMode.MOVE);
+                Dragboard dragboard = iv.startDragAndDrop(TransferMode.ANY);
                 ClipboardContent contenu = new ClipboardContent();
                 contenu.putString("");
                 dragboard.setContent(contenu);
-
             });
+
+            iv.setOnDragOver(event -> event.acceptTransferModes(TransferMode.ANY));
 
             iv.setOnDragDropped(event -> {
+                ImageView source = (ImageView) event.getGestureSource();
+                Image temp = iv.getImage();
+
+                iv.setImage(source.getImage());
+                source.setImage(temp);
+
                 event.setDropCompleted(true);
             });
-        }
-    }
 
-    private Node getNodeFromGridPane(GridPane gp, int x, int y) {
-        for (Node node : gp.getChildren())
-            if (GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node) == y)
-                return node;
-        return null;
+            iv.setOnDragDone(event -> {
+
+            });
+        }
     }
 }
