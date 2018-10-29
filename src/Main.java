@@ -10,8 +10,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import javax.sound.sampled.Clip;
-
 public class Main extends Application {
     private Image[] mario = {new Image("Images/mario0.jpg"), new Image("Images/mario1.jpg"),
             new Image("Images/mario2.jpg"), new Image("Images/mario3.jpg"), new Image("Images/mario4.jpg"),
