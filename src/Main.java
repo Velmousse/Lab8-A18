@@ -17,10 +17,9 @@ import java.util.ArrayList;
 public class Main extends Application {
     private Scene scene;
 
-    private Image[] mario = {new Image("Images/mario0.jpg"), new Image("Images/mario1.jpg"),
-            new Image("Images/mario2.jpg"), new Image("Images/mario3.jpg"), new Image("Images/mario4.jpg"),
-            new Image("Images/mario5.jpg"), new Image("Images/mario6.jpg"), new Image("Images/mario7.jpg"),
-            new Image("Images/mario8.jpg")};
+    private Image[] mario = {new Image("Images/mario0.jpg"), new Image("Images/mario1.jpg"), new Image("Images/mario2.jpg"),
+            new Image("Images/mario3.jpg"), new Image("Images/mario4.jpg"), new Image("Images/mario5.jpg"),
+            new Image("Images/mario6.jpg"), new Image("Images/mario7.jpg"), new Image("Images/mario8.jpg")};
 
     private ImageView[] imageViews = new ImageView[9];
 
