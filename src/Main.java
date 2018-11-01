@@ -2,7 +2,6 @@ import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,8 +34,10 @@ public class Main extends Application {
 
         scene = new Scene(gp);
         scene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.M && event.isControlDown())
+            if (event.getCode() == KeyCode.M && event.isControlDown()) {
+                setImageViews();
                 setGridPane(gp);
+            }
         });
 
         stage.setResizable(false);
@@ -53,7 +54,6 @@ public class Main extends Application {
             used[i] = false;
 
         int rnd = (int)(Math.random() * 9);
-
         for (int i = 0; i < 9; i++) {
             while (used[rnd])
                 rnd = (int)(Math.random() * 9);
@@ -67,11 +67,9 @@ public class Main extends Application {
         int i = 0;
         gp.getChildren().clear();
 
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
+        for (int x = 0; x < 3; x++)
+            for (int y = 0; y < 3; y++)
                 gp.add(imageViews[i++], y, x);
-            }
-        }
 
         setDragAndDrop(gp);
     }
@@ -97,34 +95,30 @@ public class Main extends Application {
                 event.setDropCompleted(true);
             });
 
-            iv.setOnDragDone(event -> {
-                if (checkIfDone(gp)) {
-                    Alert alerte = new Alert(Alert.AlertType.CONFIRMATION);
-                    alerte.setTitle("Victoire!");
-                    alerte.setHeaderText("Félicitations! Vous avez gagné.");
-                    alerte.setContentText("Voulez-vous rejouer?");
-                    ButtonType ok = alerte.showAndWait().get();
-                    if (ok == ButtonType.OK) {
-                        setImageViews();
-                        setGridPane(gp);
-                    }
-                    else System.exit(0);
-                }
-            });
+            iv.setOnDragDone(event -> checkIfDone(gp));
         }
     }
 
-    private boolean checkIfDone(GridPane gp) {
+    private void checkIfDone(GridPane gp) {
+        boolean done = true;
+
         ArrayList<ImageView> nodes = new ArrayList<>();
-
-        for (Node node : gp.getChildren()) {
+        for (Node node : gp.getChildren())
             nodes.add((ImageView) node);
-        }
 
-        for (int i = 0; i < 9; i++) {
-            if (!(mario[i] == nodes.get(i).getImage())) return false;
-        }
+        for (int i = 0; i < 9; i++)
+            if (!(mario[i] == nodes.get(i).getImage())) done = false;
 
-        return true;
+        if (done) {
+            Alert alerte = new Alert(Alert.AlertType.CONFIRMATION);
+            alerte.setTitle("Victoire!");
+            alerte.setHeaderText("Félicitations! Vous avez gagné.");
+            alerte.setContentText("Voulez-vous rejouer?");
+            ButtonType ok = alerte.showAndWait().get();
+            if (ok == ButtonType.OK) {
+                setImageViews();
+                setGridPane(gp);
+            } else System.exit(0);
+        }
     }
 }
