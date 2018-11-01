@@ -1,6 +1,9 @@
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -10,7 +13,11 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class Main extends Application {
+    private Scene scene;
+
     private Image[] mario = {new Image("Images/mario0.jpg"), new Image("Images/mario1.jpg"),
             new Image("Images/mario2.jpg"), new Image("Images/mario3.jpg"), new Image("Images/mario4.jpg"),
             new Image("Images/mario5.jpg"), new Image("Images/mario6.jpg"), new Image("Images/mario7.jpg"),
@@ -26,7 +33,7 @@ public class Main extends Application {
         GridPane gp = new GridPane();
         setGridPane(gp);
 
-        Scene scene = new Scene(gp);
+        scene = new Scene(gp);
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.M && event.isControlDown())
                 setGridPane(gp);
@@ -40,27 +47,29 @@ public class Main extends Application {
         stage.show();
     }
 
-    private void setImageViews() {  //Ajouter d'autres puzzles plus tard
-        for (int i = 0; i < mario.length; i++)
-            imageViews[i] = new ImageView(mario[i]);
-    }
-
-    private void setGridPane(GridPane gp) {
-        gp.getChildren().clear();
-
+    private void setImageViews() {
         boolean used[] = new boolean[9];
         for (int i = 0; i < used.length; i++)
             used[i] = false;
 
         int rnd = (int)(Math.random() * 9);
 
+        for (int i = 0; i < 9; i++) {
+            while (used[rnd])
+                rnd = (int)(Math.random() * 9);
+
+            used[rnd] = true;
+            imageViews[i] = new ImageView(mario[rnd]);
+        }
+    }
+
+    private void setGridPane(GridPane gp) {
+        int i = 0;
+        gp.getChildren().clear();
+
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
-                while (used[rnd])
-                    rnd = (int)(Math.random() * 9);
-
-                used[rnd] = true;
-                gp.add(imageViews[rnd], x, y);
+                gp.add(imageViews[i++], y, x);
             }
         }
 
@@ -89,8 +98,33 @@ public class Main extends Application {
             });
 
             iv.setOnDragDone(event -> {
-
+                if (checkIfDone(gp)) {
+                    Alert alerte = new Alert(Alert.AlertType.CONFIRMATION);
+                    alerte.setTitle("Victoire!");
+                    alerte.setHeaderText("Félicitations! Vous avez gagné.");
+                    alerte.setContentText("Voulez-vous rejouer?");
+                    ButtonType ok = alerte.showAndWait().get();
+                    if (ok == ButtonType.OK) {
+                        setImageViews();
+                        setGridPane(gp);
+                    }
+                    else System.exit(0);
+                }
             });
         }
+    }
+
+    private boolean checkIfDone(GridPane gp) {
+        ArrayList<ImageView> nodes = new ArrayList<>();
+
+        for (Node node : gp.getChildren()) {
+            nodes.add((ImageView) node);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            if (!(mario[i] == nodes.get(i).getImage())) return false;
+        }
+
+        return true;
     }
 }
